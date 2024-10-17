@@ -12,9 +12,7 @@ from .serializers import *
 class RegisterView(APIView):
     def post(self, request):
         try:
-            data = request.data
-            serializer = RegisterSerializer(data=data)
-
+            serializer = RegisterSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response({
@@ -40,9 +38,7 @@ class RegisterView(APIView):
 class LoginView(APIView):
     def post(self, request):
         try:
-            data = request.data
-            serializer = LoginSerializer(data=data)
-
+            serializer = LoginSerializer(data=request.data)
             if serializer.is_valid():
                 response = serializer.get_jwt_token(serializer.validated_data)
                 if response:
