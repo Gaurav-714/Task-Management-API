@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.core.paginator import Paginator
 import uuid
 from .serializers import TaskModelSerializer
 from .models import TaskModel
@@ -13,14 +14,30 @@ class CreateListTaskView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        tasks = TaskModel.objects.filter(user=request.user).order_by('-createdAt')
-        serializer = TaskModelSerializer(tasks, many=True)
-        return Response({
-            'success': True,
-            'message': 'Tasks fetched successfully.',
-            'number_of_tasks': tasks.count(),
-            'tasks': serializer.data
-        }, status=status.HTTP_200_OK)
+        try:
+            tasks = TaskModel.objects.filter(user=request.user).order_by('?')
+            paginator = Paginator(tasks, 5)
+            page_number = request.GET.get('page', 1)
+
+            try:
+                page_tasks = paginator.page(page_number)
+            except:
+                page_tasks = []
+
+            serializer = TaskModelSerializer(page_tasks, many=True)
+            return Response({
+                'success': True,
+                'message': 'Tasks fetched successfully.',
+                'number_of_tasks': tasks.count(),
+                'tasks': serializer.data
+            }, status=status.HTTP_200_OK)
+        
+        except Exception as ex:
+            return Response({
+                'success': False,
+                'message': 'Something went wrong.',
+                'error': str(ex)
+            }, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
         data = request.data
