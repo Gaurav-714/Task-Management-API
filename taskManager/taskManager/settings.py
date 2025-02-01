@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-pxgj8=h=099g-xz$=t3rcv=q*yzj8_)juuhh*k^f_4y-1n!n1l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -93,7 +93,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-"""
 
 DATABASES = {
     'default': {
@@ -105,6 +104,14 @@ DATABASES = {
         'PORT': '5432', # os.environ.get('DATABASE_PORT'),
     }
 }
+"""
+
+import dj_database_url
+
+DATABASES = {
+    "default": dj_database_url.config(default="postgresql://task_manager_api_db_pnvr_user:DoQgNJC3IlxFSJ2C5ExR4jsIYU853uPJ@dpg-cuf4fkl6l47c73fctsl0-a.oregon-postgres.render.com/task_manager_api_db_pnvr", conn_max_age=600)
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -140,7 +147,10 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
