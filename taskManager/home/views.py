@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator
+from django.db.models import Q
 import uuid
 from .serializers import TaskModelSerializer
 from .models import TaskModel
@@ -16,6 +17,10 @@ class CreateListTaskView(APIView):
     def get(self, request):
         try:
             tasks = TaskModel.objects.filter(user=request.user).order_by('?')
+            search_query = request.GET.get('search')
+            if search_query:
+                tasks = TaskModel.objects.filter(Q(title__icontains=search_query) | Q(description__icontains=search_query))
+
             paginator = Paginator(tasks, 5)
             page_number = request.GET.get('page', 1)
 
@@ -36,7 +41,7 @@ class CreateListTaskView(APIView):
             return Response({
                 'success': False,
                 'message': 'Something went wrong.',
-                'error': str(ex)
+                #'error': str(ex)
             }, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
