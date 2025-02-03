@@ -109,7 +109,8 @@ DATABASES = {
 import dj_database_url
 
 DATABASES = {
-    "default": dj_database_url.config(default="postgresql://task_manager_api_db_pnvr_user:DoQgNJC3IlxFSJ2C5ExR4jsIYU853uPJ@dpg-cuf4fkl6l47c73fctsl0-a.oregon-postgres.render.com/task_manager_api_db_pnvr", conn_max_age=600)
+    #"default": dj_database_url.config(default="postgresql://personal_projects_database_wyso_user:yh0j7ELFNR2d5GP1VMEciPcnG6M9no7b@dpg-cug93slsvqrc738d1180-a/personal_projects_database_wyso", conn_max_age=600),
+    "default": dj_database_url.config(default=os.environ.get('DATABASE_URL'), conn_max_age=600)
 }
 
 
